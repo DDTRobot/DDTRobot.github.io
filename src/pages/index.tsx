@@ -4,6 +4,7 @@ import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Translate, {translate} from '@docusaurus/Translate';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import GiscusComments from '@site/src/components/Giscus';
 import RecentDiscussions from '@site/src/components/RecentDiscussions';
 
@@ -69,15 +70,18 @@ type Generation = {
   name: string;
   image: string;
   href: string;
+  hrefEn?: string;
 };
 
 const generations: Generation[] = [
   {name: 'Diablo', image: '/img/diablo.png', href: 'https://github.com/DDTRobot/diablo_ros2'},
-  {name: 'TITA', image: '/img/TITA.png', href: 'https://tita-development-manual-uc.readthedocs.io/zh-cn/latest/'},
-  {name: 'D-INFINITE', image: '/img/D-INFINITE.png', href: 'https://d1-development-manual-cn.readthedocs.io/zh-cn/latest/'},
+  {name: 'TITA', image: '/img/TITA.png', href: 'https://tita-development-manual-uc.readthedocs.io/zh-cn/latest/', hrefEn: 'https://tita-ubuntu-manual-english.readthedocs.io/en/latest/'},
+  {name: 'D-INFINITE', image: '/img/D-INFINITE.png', href: 'https://d1-development-manual-cn.readthedocs.io/zh-cn/latest/', hrefEn: 'https://y1.readthedocs.io/en/latest/'},
 ];
 
 function Generations() {
+  const {i18n: {currentLocale}} = useDocusaurusContext();
+  const isEn = currentLocale === 'en';
   return (
     <section className={styles.generations}>
       <div className="container">
@@ -91,7 +95,7 @@ function Generations() {
           {generations.map((g) => (
             <a
               key={g.name}
-              href={g.href}
+              href={isEn && g.hrefEn ? g.hrefEn : g.href}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.genCard}>
