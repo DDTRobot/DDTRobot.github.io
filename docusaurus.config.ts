@@ -9,7 +9,7 @@ const COMMUNITY_REPO = 'community';
 const config: Config = {
   title: '本末机器人',
   tagline: '本末科技机器人业务',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.png',
 
   future: {
     v4: true,
