@@ -1,0 +1,363 @@
+/* ==========================================================================
+   DDTRobot brand system
+   Industrial robotics — black + yellow
+   ========================================================================== */
+
+:root {
+  /* Brand */
+  --brand-yellow: #ffd400;
+  --brand-yellow-soft: #facc15;
+  --brand-yellow-deep: #d4a800;
+
+  /* Surfaces */
+  --ink-0: #0a0a0a;
+  --ink-1: #111111;
+  --ink-2: #161616;
+  --ink-3: #1f1f1f;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  /* Type — system Hei (黑体) stack */
+  --font-display: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', 'Heiti SC',
+    'Source Han Sans SC', 'Noto Sans CJK SC', sans-serif;
+  --font-body: var(--font-display);
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Courier New', monospace;
+
+  /* Infima override — light mode keeps yellow readable on white */
+  --ifm-color-primary: #c69a00;
+  --ifm-color-primary-dark: #b38b00;
+  --ifm-color-primary-darker: #a98300;
+  --ifm-color-primary-darkest: #8c6c00;
+  --ifm-color-primary-light: #d9aa00;
+  --ifm-color-primary-lighter: #e0b000;
+  --ifm-color-primary-lightest: #f2c100;
+
+  --ifm-font-family-base: var(--font-body);
+  --ifm-heading-font-family: var(--font-display);
+  --ifm-font-family-monospace: var(--font-mono);
+
+  --ifm-font-weight-bold: 600;
+  --ifm-heading-font-weight: 600;
+  --ifm-h1-font-size: 2.75rem;
+  --ifm-h2-font-size: 2rem;
+  --ifm-h3-font-size: 1.5rem;
+  --ifm-line-height-base: 1.65;
+  --ifm-heading-line-height: 1.15;
+
+  --ifm-code-font-size: 92%;
+  --ifm-code-border-radius: 4px;
+
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode = primary brand expression */
+[data-theme='dark'] {
+  --ifm-background-color: var(--ink-0);
+  --ifm-background-surface-color: var(--ink-1);
+
+  --ifm-color-primary: var(--brand-yellow);
+  --ifm-color-primary-dark: var(--brand-yellow-soft);
+  --ifm-color-primary-darker: var(--brand-yellow-deep);
+  --ifm-color-primary-darkest: #b38b00;
+  --ifm-color-primary-light: #ffe04d;
+  --ifm-color-primary-lighter: #ffe566;
+  --ifm-color-primary-lightest: #fff099;
+
+  --ifm-color-content: #ededed;
+  --ifm-color-content-secondary: #a3a3a3;
+  --ifm-color-emphasis-100: #161616;
+  --ifm-color-emphasis-200: #1f1f1f;
+  --ifm-color-emphasis-300: #2a2a2a;
+
+  --ifm-navbar-background-color: rgba(10, 10, 10, 0.78);
+  --ifm-footer-background-color: #050505;
+
+  --docusaurus-highlighted-code-line-bg: rgba(255, 212, 0, 0.10);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display headings: tight tracking, balanced wrapping */
+h1,
+h2 {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h3 {
+  letter-spacing: -0.01em;
+}
+
+/* Code / inline mono — tabular numbers for data feel */
+code,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Navbar — slim, blurred, branded
+   ========================================================================== */
+
+.navbar {
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
+  height: 64px;
+}
+
+.navbar__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 1.05rem;
+}
+
+.navbar__brand {
+  margin-right: 2rem;
+}
+
+.navbar__logo {
+  height: 32px;
+  width: 32px;
+  margin-right: 0.6rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.navbar__logo img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.navbar__link {
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.005em;
+  position: relative;
+  transition: color 180ms ease;
+}
+
+[data-theme='dark'] .navbar__link {
+  color: #d4d4d4;
+}
+
+.navbar__link:hover {
+  color: var(--brand-yellow);
+}
+
+.navbar__link--active::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: -2px;
+  height: 2px;
+  background: var(--brand-yellow);
+}
+
+/* ==========================================================================
+   Buttons — industrial, intentional
+   ========================================================================== */
+
+.button {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  border-radius: 2px;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button--primary {
+  --ifm-button-background-color: var(--brand-yellow);
+  --ifm-button-color: #0a0a0a;
+  --ifm-button-border-color: var(--brand-yellow);
+  background-color: var(--brand-yellow);
+  color: #0a0a0a !important;
+  border: 1px solid var(--brand-yellow);
+  box-shadow: 0 0 0 0 rgba(255, 212, 0, 0);
+}
+
+.button--primary:hover {
+  background-color: #ffdf33;
+  border-color: #ffdf33;
+  color: #0a0a0a !important;
+  box-shadow: 0 8px 24px -8px rgba(255, 212, 0, 0.55);
+}
+
+.button--secondary {
+  background-color: transparent;
+  color: var(--brand-yellow) !important;
+  border: 1px solid var(--brand-yellow);
+}
+
+.button--secondary:hover {
+  background-color: rgba(255, 212, 0, 0.08);
+  color: var(--brand-yellow) !important;
+}
+
+.button--outline {
+  border-color: var(--line-strong);
+  color: var(--ifm-color-content) !important;
+  background: transparent;
+}
+
+[data-theme='dark'] .button--outline {
+  color: #ededed !important;
+}
+
+.button--outline:hover {
+  border-color: var(--brand-yellow);
+  color: var(--brand-yellow) !important;
+  background: transparent;
+}
+
+/* ==========================================================================
+   Footer — minimal, mono details
+   ========================================================================== */
+
+.footer--dark {
+  background: #050505;
+  border-top: 1px solid var(--line);
+}
+
+.footer__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a3a3a3;
+}
+
+.footer__link-item {
+  color: #d4d4d4;
+  font-size: 0.92rem;
+}
+
+.footer__link-item:hover {
+  color: var(--brand-yellow);
+  text-decoration: none;
+}
+
+.footer__copyright {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #737373;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+/* ==========================================================================
+   Doc page polish
+   ========================================================================== */
+
+article header h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.025em;
+}
+
+.markdown a {
+  color: var(--ifm-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 212, 0, 0.4);
+}
+
+.markdown a:hover {
+  text-decoration-color: var(--brand-yellow);
+}
+
+[data-theme='dark'] .markdown a {
+  color: var(--brand-yellow);
+}
+
+/* ==========================================================================
+   Hero & layout primitives used by pages
+   ========================================================================== */
+
+.brand-grid-bg {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: -1px -1px;
+}
+
+.brand-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-yellow);
+}
+
+.spec-row {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #a3a3a3;
+  letter-spacing: 0.04em;
+}
+
+.divider-y {
+  height: 1px;
+  background: var(--line);
+  width: 100%;
+}
+
+/* Light-mode adjustments for primary buttons (keep contrast usable) */
+html:not([data-theme='dark']) .button--primary {
+  background-color: #0a0a0a;
+  border-color: #0a0a0a;
+  color: var(--brand-yellow) !important;
+}
+
+html:not([data-theme='dark']) .button--primary:hover {
+  background-color: #1f1f1f;
+  border-color: #1f1f1f;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.35);
+}
+
+html:not([data-theme='dark']) .button--secondary {
+  color: #0a0a0a !important;
+  border-color: #0a0a0a;
+}
+
+html:not([data-theme='dark']) .button--secondary:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+html:not([data-theme='dark']) .navbar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+html:not([data-theme='dark']) .eyebrow {
+  color: var(--brand-yellow-deep);
+}
