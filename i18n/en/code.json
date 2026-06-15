@@ -1,14 +1,14 @@
 {
   "page.title": {
-    "message": "Direct Drive Robotics — Developer Portal",
+    "message": "Direct Drive Technology Robotics — Developer Portal",
     "description": "Homepage title"
   },
   "page.desc": {
-    "message": "Direct Drive Robotics is the robotics division of Benmo Technology. Explore our products and join the developer community",
+    "message": "Direct Drive Technology Robotics is the robotics division of Benmo Technology. Explore our products and join the developer community",
     "description": "Homepage meta description"
   },
   "hero.title.line1": {
-    "message": "Direct Drive Robotics",
+    "message": "Direct Drive Technology Robotics",
     "description": "Hero title line 1"
   },
   "hero.title.line2": {
@@ -16,7 +16,7 @@
     "description": "Hero title line 2 (accent)"
   },
   "hero.lede": {
-    "message": "Direct Drive Robotics is the robotics division of Benmo Technology. Explore our products and join the developer community",
+    "message": "Direct Drive Technology Robotics is the robotics division of Benmo Technology. Explore our products and join the developer community",
     "description": "Hero subtitle"
   },
   "hero.cta.community": {

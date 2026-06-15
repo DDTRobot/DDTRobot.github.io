@@ -24,7 +24,7 @@
     "description": "The label of footer link with label=GitHub linking to https://github.com/DDTRobot"
   },
   "copyright": {
-    "message": "Copyright © 2026 Direct Drive Robotics. Built with Docusaurus.",
+    "message": "Copyright © 2026 Direct Drive Technology Robotics. Built with Docusaurus.",
     "description": "The footer copyright"
   }
 }
