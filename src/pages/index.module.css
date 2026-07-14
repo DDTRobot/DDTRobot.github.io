@@ -53,7 +53,6 @@ html:not([data-theme='dark']) .hero {
 
 .heroAccent {
   color: var(--brand-yellow);
-  display: inline-block;
 }
 
 html:not([data-theme='dark']) .heroAccent {
@@ -83,12 +82,24 @@ html:not([data-theme='dark']) .heroLede {
 .heroVisual {
   position: relative;
   width: 100%;
+}
+
+.heroStack {
+  position: relative;
+  width: 100%;
   aspect-ratio: 4 / 5;
   max-height: 600px;
 }
 
+.heroStackCard {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+}
+
 .heroImageFrame {
   position: relative;
+  display: block;
   width: 100%;
   height: 100%;
   border: 1px solid var(--line-strong);
@@ -98,6 +109,16 @@ html:not([data-theme='dark']) .heroLede {
   box-shadow:
     0 30px 80px -30px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 212, 0, 0.04);
+  text-decoration: none;
+  transition: border-color 220ms ease;
+  cursor: grab;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.heroImageFrame:hover {
+  text-decoration: none;
+  border-color: rgba(255, 212, 0, 0.35);
 }
 
 html:not([data-theme='dark']) .heroImageFrame {
@@ -107,11 +128,16 @@ html:not([data-theme='dark']) .heroImageFrame {
 }
 
 .heroImage {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   filter: contrast(1.05) saturate(0.95);
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .heroImageOverlay {
@@ -164,6 +190,40 @@ html:not([data-theme='dark']) .heroImageFrame {
   border-bottom: 2px solid var(--brand-yellow);
   border-right: 2px solid var(--brand-yellow);
   pointer-events: none;
+}
+
+.heroDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.heroDot {
+  width: 28px;
+  height: 3px;
+  border: none;
+  border-radius: 1px;
+  background: var(--line-strong);
+  cursor: pointer;
+  padding: 0;
+  transition: background 200ms ease;
+}
+
+.heroDot:hover {
+  background: rgba(255, 212, 0, 0.4);
+}
+
+.heroDotActive {
+  background: var(--brand-yellow);
+}
+
+html:not([data-theme='dark']) .heroDot {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+html:not([data-theme='dark']) .heroDotActive {
+  background: var(--brand-yellow-deep);
 }
 
 /* ----- GENERATIONS (product timeline) ------------------------------------ */
@@ -436,7 +496,7 @@ html:not([data-theme='dark']) .cardFoot {
     gap: 2.5rem;
     min-height: auto;
   }
-  .heroVisual {
+  .heroStack {
     aspect-ratio: 4 / 3;
     max-height: 400px;
   }

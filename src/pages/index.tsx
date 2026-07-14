@@ -1,17 +1,181 @@
-import type {ReactNode} from 'react';
+import type {ReactNode, PointerEvent as ReactPointerEvent} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
 import Translate, {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {motion} from 'motion/react';
 import GiscusComments from '@site/src/components/Giscus';
 import RecentDiscussions from '@site/src/components/RecentDiscussions';
+import {useGlowHandlers} from '@site/src/components/useGlowHandlers';
 
 import styles from './index.module.css';
 
 const ORG_REPO = 'https://github.com/DDTRobot';
 const COMMUNITY_REPO = 'https://github.com/DDTRobot/community';
+
+type Generation = {
+  name: string;
+  image: string;
+  href: string;
+  hrefEn?: string;
+};
+
+const generations: Generation[] = [
+  {name: 'Diablo', image: '/img/diablo.png', href: 'https://github.com/DDTRobot/diablo_ros2'},
+  {name: 'TITA', image: '/img/TITA.png', href: 'https://tita-development-manual-uc.readthedocs.io/zh-cn/latest/', hrefEn: 'https://tita-ubuntu-manual-english.readthedocs.io/en/latest/'},
+  {name: 'D-INFINITE', image: '/img/D-INFINITE.png', href: 'https://d1-development-manual-cn.readthedocs.io/zh-cn/latest/', hrefEn: 'https://y1.readthedocs.io/en/latest/'},
+];
+
+const CAROUSEL_INTERVAL = 4200;
+const DRAG_BUFFER = 60;
+const VELOCITY_THRESHOLD = 400;
+
+function HeroCarousel() {
+  const {i18n: {currentLocale}} = useDocusaurusContext();
+  const isEn = currentLocale === 'en';
+  const [index, setIndex] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const justSwipedRef = useRef(false);
+  const startXRef = useRef<number | null>(null);
+  const startTimeRef = useRef(0);
+  const count = generations.length;
+
+  const goTo = (i: number) => setIndex(((i % count) + count) % count);
+  const next = () => goTo(index + 1);
+
+  useEffect(() => {
+    if (dragging) return;
+    const timer = setInterval(next, CAROUSEL_INTERVAL);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, dragging]);
+
+  // Distance (in stack position) forward from the active card — always
+  // 0, 1, 2, ... so every card is visible and cycles to the back on swipe.
+  const offsetOf = (i: number) => ((i - index) % count + count) % count;
+
+  // Gesture recognition without any visual drag: the image never moves,
+  // we just read the pointer's horizontal travel and velocity on release.
+  const handlePointerDown = (e: ReactPointerEvent) => {
+    startXRef.current = e.clientX;
+    startTimeRef.current = e.timeStamp;
+    setDragging(true);
+  };
+
+  const handlePointerMove = (e: ReactPointerEvent) => {
+    if (startXRef.current === null) return;
+    if (Math.abs(e.clientX - startXRef.current) > 4) {
+      justSwipedRef.current = true;
+    }
+  };
+
+  const handlePointerUp = (e: ReactPointerEvent) => {
+    setDragging(false);
+    if (startXRef.current === null) return;
+
+    const deltaX = e.clientX - startXRef.current;
+    const deltaTime = Math.max(1, e.timeStamp - startTimeRef.current);
+    const velocity = (deltaX / deltaTime) * 1000; // px/s
+
+    const swipeLeft = deltaX < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD;
+    const swipeRight = deltaX > DRAG_BUFFER || velocity > VELOCITY_THRESHOLD;
+
+    if (swipeLeft) next();
+    else if (swipeRight) goTo(index - 1);
+
+    startXRef.current = null;
+    // Keep the "just swiped" flag alive briefly so the trailing click
+    // (fired right after pointerup) is still suppressed, then clear it.
+    setTimeout(() => {
+      justSwipedRef.current = false;
+    }, 200);
+  };
+
+  return (
+    <div className={styles.heroVisual}>
+      <div className={styles.heroStack}>
+        {generations.map((g, i) => {
+          const offset = offsetOf(i);
+          const isActive = offset === 0;
+          const href = isEn && g.hrefEn ? g.hrefEn : g.href;
+
+          return (
+            <motion.div
+              key={g.name}
+              className={styles.heroStackCard}
+              style={{zIndex: count - offset}}
+              onPointerDown={isActive ? handlePointerDown : undefined}
+              onPointerMove={isActive ? handlePointerMove : undefined}
+              onPointerUp={isActive ? handlePointerUp : undefined}
+              animate={{
+                x: offset === 0 ? 0 : offset * 18,
+                y: offset * 14,
+                scale: 1 - offset * 0.06,
+                opacity: offset === 0 ? 1 : 0.55 - offset * 0.15,
+              }}
+              transition={{duration: 0.45, ease: [0.22, 1, 0.36, 1]}}
+              whileTap={isActive ? {cursor: 'grabbing'} : undefined}>
+              {isActive ? (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  draggable={false}
+                  className={styles.heroImageFrame}
+                  aria-label={g.name}
+                  onClick={(e) => {
+                    if (justSwipedRef.current) e.preventDefault();
+                  }}>
+                  <img
+                    src={g.image}
+                    alt={g.name}
+                    className={styles.heroImage}
+                    loading="eager"
+                    draggable={false}
+                  />
+                  <div className={styles.heroImageOverlay} />
+                  <div className={styles.heroBadge}>
+                    <span className={styles.heroBadgeDot} />
+                    {g.name}
+                  </div>
+                  <div className={styles.heroCorner} aria-hidden />
+                </a>
+              ) : (
+                <div className={styles.heroImageFrame} aria-hidden>
+                  <img
+                    src={g.image}
+                    alt=""
+                    className={styles.heroImage}
+                    loading="lazy"
+                    draggable={false}
+                  />
+                  <div className={styles.heroImageOverlay} />
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <div className={styles.heroDots} role="tablist">
+        {generations.map((g, i) => (
+          <button
+            key={g.name}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={g.name}
+            className={clsx(styles.heroDot, i === index && styles.heroDotActive)}
+            onClick={() => goTo(i)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Hero() {
   return (
@@ -45,43 +209,16 @@ function Hero() {
           </div>
         </div>
 
-        <div className={styles.heroVisual} aria-hidden>
-          <div className={styles.heroImageFrame}>
-            <img
-              src="/img/D-INFINITE.png"
-              alt="D-INFINITE"
-              className={styles.heroImage}
-              loading="eager"
-            />
-            <div className={styles.heroImageOverlay} />
-            <div className={styles.heroBadge}>
-              <span className={styles.heroBadgeDot} />
-              D-INFINITE
-            </div>
-            <div className={styles.heroCorner} aria-hidden />
-          </div>
-        </div>
+        <HeroCarousel />
       </div>
     </header>
   );
 }
 
-type Generation = {
-  name: string;
-  image: string;
-  href: string;
-  hrefEn?: string;
-};
-
-const generations: Generation[] = [
-  {name: 'Diablo', image: '/img/diablo.png', href: 'https://github.com/DDTRobot/diablo_ros2'},
-  {name: 'TITA', image: '/img/TITA.png', href: 'https://tita-development-manual-uc.readthedocs.io/zh-cn/latest/', hrefEn: 'https://tita-ubuntu-manual-english.readthedocs.io/en/latest/'},
-  {name: 'D-INFINITE', image: '/img/D-INFINITE.png', href: 'https://d1-development-manual-cn.readthedocs.io/zh-cn/latest/', hrefEn: 'https://y1.readthedocs.io/en/latest/'},
-];
-
 function Generations() {
   const {i18n: {currentLocale}} = useDocusaurusContext();
   const isEn = currentLocale === 'en';
+  const {onMouseMove, onMouseLeave} = useGlowHandlers();
   return (
     <section className={styles.generations}>
       <div className="container">
@@ -98,7 +235,9 @@ function Generations() {
               href={isEn && g.hrefEn ? g.hrefEn : g.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.genCard}>
+              onMouseMove={onMouseMove}
+              onMouseLeave={onMouseLeave}
+              className={clsx(styles.genCard, 'glow-card')}>
               <div className={styles.genImageWrap}>
                 <img
                   src={g.image}
@@ -171,10 +310,13 @@ const categories: Category[] = [
 ];
 
 function CategoryCard({titleId, titleMsg, subtitle, descId, descMsg, href, span}: Omit<Category, 'id'>) {
+  const {onMouseMove, onMouseLeave} = useGlowHandlers();
   return (
     <Link
       to={href}
-      className={clsx(styles.card, span === 'wide' && styles.cardWide)}>
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      className={clsx(styles.card, 'glow-card', span === 'wide' && styles.cardWide)}>
       <div className={styles.cardTop}>
       </div>
       <div className={styles.cardMid}>
